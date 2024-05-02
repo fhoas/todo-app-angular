@@ -1,0 +1,35 @@
+<div class="p-4">
+    <div>
+        <h3 class="text-xl font-bold">{{getName()}}'s List</h3>
+    </div>
+
+    <div class="flex mb-3">
+        <input #input (keyup.enter)="addItem(input.value)" type="text"
+            class="form-input flex-grow border-gray-300 rounded-l-md">
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r-md">Add</button>
+    </div>
+
+    <div class="mb-3">
+        <input type="checkbox" [(ngModel)]="displayAll" id="displayAll" class="form-checkbox mr-2">
+        <label for="displayAll" class="text-sm">Show All</label>
+    </div>
+
+    <table class="w-full">
+        <thead>
+            <tr>
+                <th class="px-4 py-2 text-start">id</th>
+                <th class="px-4 py-2 text-start">Description</th>
+                <th class="px-4 py-2 text-start">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of getItems();" class="border-b">
+                <td class="px-4 py-2">{{item.desc}}</td>
+                <td class="px-4 py-2">{{item.action}}</td>
+                <td class="px-4 py-2">
+                    <input type="checkbox" [(ngModel)]="item.action">
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
