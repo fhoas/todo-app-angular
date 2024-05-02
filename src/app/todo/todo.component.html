@@ -4,9 +4,11 @@
     </div>
 
     <div class="flex mb-3">
-        <input #input (keyup.enter)="addItem(input.value)" type="text"
-            class="form-input flex-grow border-gray-300 rounded-l-md">
-        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r-md">Add</button>
+        <input [(ngModel)]="inputText" #input (keyup.enter)="addItems()" type="text"
+            class="form-input flex-grow border-gray-300 rounded-l-md outline-none p-2">
+        <button (click)="addItems()" [disabled]="inputText.length === 0"
+            [class]="{'bg-gray-300': inputText.length === 0, 'bg-blue-500': inputText.length !== 0}"
+            class="text-white font-bold py-2 px-4 rounded-r-md">Add</button>
     </div>
 
     <div class="mb-3">
@@ -14,22 +16,41 @@
         <label for="displayAll" class="text-sm">Show All</label>
     </div>
 
-    <table class="w-full">
-        <thead>
-            <tr>
-                <th class="px-4 py-2 text-start">id</th>
-                <th class="px-4 py-2 text-start">Description</th>
-                <th class="px-4 py-2 text-start">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let item of getItems();" class="border-b">
-                <td class="px-4 py-2">{{item.desc}}</td>
-                <td class="px-4 py-2">{{item.action}}</td>
-                <td class="px-4 py-2">
-                    <input type="checkbox" [(ngModel)]="item.action">
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div>
+        {{displayCount()}} tasks completed.
+    </div>
+
+    <div *ngIf="getItems().length == 0 else itemsTable">
+        All tasks are completed
+    </div>
+
+    <ng-template #itemsTable>
+        <table class="w-full" *ngIf="getItems().length > 0">
+            <thead>
+                <tr>
+                    <th class="px-4 py-2 text-start">id</th>
+                    <th class="px-4 py-2 text-start">Description</th>
+                    <th class="px-4 py-2 text-start">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of getItems();" class="border-b"
+                    [class]="{'bg-green-500': item.action, 'bg-red-500': !item.action}">
+                    <td class="px-4 py-2">{{item.desc}}</td>
+                    <td class="px-4 py-2">
+                        <div *ngIf="item.action; then yesTemp else noTemp"></div>
+                        <ng-template #yesTemp>Yes</ng-template>
+                        <ng-template #noTemp>No</ng-template>
+                    </td>
+                    <td class="px-4 py-2">
+                        <input (change)="onActionChanged(item)" type="checkbox" [(ngModel)]="item.action">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </ng-template>
+
+    <div class="p-4 bg-red-400 text-white" *ngIf="getItems().length == 0">
+        There is no tasks...
+    </div>
 </div>
